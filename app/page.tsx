@@ -1,14 +1,17 @@
+import Link from "next/link";
+``
+
 const navItems = [
-  "Home",
-  "Portfolio",
-  "Spot Calculator",
-  "Futures Calculator",
-  "Trading Journal",
-  "Performance",
-  "Risk",
-  "Bitcoin",
-  "Watchlist",
-  "Settings",
+  { label: "Home", href: "/" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Spot Calculator", href: "/spot-calculator" },
+  { label: "Futures Calculator", href: "/futures-calculator" },
+  { label: "Trading Journal", href: "/trading-journal" },
+  { label: "Performance", href: "/performance" },
+  { label: "Risk", href: "/risk" },
+  { label: "Bitcoin", href: "/bitcoin" },
+  { label: "Watchlist", href: "/watchlist" },
+  { label: "Settings", href: "/settings" },
 ];
 
 const dashboardCards = [
@@ -97,19 +100,20 @@ export default function Home() {
           </div>
 
           <nav className="space-y-1 p-4">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                className={`w-full rounded-lg px-4 py-3 text-left text-sm transition ${
-                  item === "Home"
-                    ? "border border-green-500/40 bg-green-500/10 text-green-400"
-                    : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
+  {navItems.map((item) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      className={`block w-full rounded-lg px-4 py-3 text-left text-sm transition ${
+        item.href === "/"
+          ? "border border-green-500/40 bg-green-500/10 text-green-400"
+          : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+      }`}
+    >
+      {item.label}
+    </Link>
+  ))}
+</nav>
 
           <div className="m-4 rounded-xl border border-zinc-800 bg-black p-4">
             <p className="text-xs uppercase tracking-wider text-zinc-500">
