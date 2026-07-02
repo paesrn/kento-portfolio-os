@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import AppShell from "../components/AppShell";
 import { useMemo, useState } from "react";
 
 export default function SpotCalculatorPage() {
@@ -53,25 +53,13 @@ export default function SpotCalculatorPage() {
     };
   }, [portfolioValue, riskPercent, entryPrice, stopPrice, targetPrice]);
 
-  return (
-    <main className="min-h-screen bg-black p-6 text-white">
-      <div className="mx-auto max-w-6xl space-y-6">
-       <header className="border-b border-zinc-800 pb-6">
-  <Link
-    href="/"
-    className="inline-flex items-center rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:border-green-500 hover:text-green-400"
+return (
+  <AppShell
+    title="Spot Position Calculator"
+    subtitle="Calculate position size, risk amount, target levels, and reward/risk before entering a spot trade."
   >
-    ← Back to Home Control Room
-  </Link>
-
-  <p className="mt-5 text-xs uppercase tracking-[0.35em] text-green-400">
-    Kento Portfolio OS
-  </p>
-  <h1 className="mt-3 text-3xl font-bold">Spot Position Calculator</h1>
-  <p className="mt-2 text-zinc-400">
-    Calculate position size before entering a spot trade.
-  </p>
-</header>
+    <div className="mx-auto max-w-6xl space-y-6">
+    
 
         <section className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
@@ -192,8 +180,8 @@ export default function SpotCalculatorPage() {
           </div>
         </section>
       </div>
-    </main>
-  );
+  </AppShell>
+);
 }
 
 function InputField({
