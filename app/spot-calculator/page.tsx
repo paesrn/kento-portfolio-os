@@ -40,6 +40,83 @@ export default function SpotCalculatorPage() {
     const target3R = entry + riskPerUnit * 3;
     const target5R = entry + riskPerUnit * 5;
 
+    let permission: "PASS" | "WARNING" | "BLOCKED" = "PASS";
+    let permissionColor = "text-green-400";
+    let permissionBorder = "border-green-500/40";
+    let permissionBg = "bg-green-500/10";
+
+    const reasons: string[] = [];
+    const warnings: string[] = [];
+    const actions: string[] = [];
+
+    if (risk > 2) {
+      permission = "BLOCKED";
+      permissionColor = "text-red-400";
+      permissionBorder = "border-red-500/40";
+      permissionBg = "bg-red-500/10";
+      warnings.push("Risk per trade is above the 2% maximum rule.");
+      actions.push("Reduce risk percentage to 2% or below before entering.");
+    } else if (risk > 1) {
+      permission = "WARNING";
+      permissionColor = "text-yellow-400";
+      permissionBorder = "border-yellow-500/40";
+      permissionBg = "bg-yellow-500/10";
+      warnings.push("Risk is above conservative level. Position requires caution.");
+      actions.push("Consider reducing risk to 1% or less.");
+    } else {
+      reasons.push("Portfolio risk is within conservative risk limit.");
+    }
+
+    if (rewardRisk < 1) {
+      permission = "BLOCKED";
+      permissionColor = "text-red-400";
+      permissionBorder = "border-red-500/40";
+      permissionBg = "bg-red-500/10";
+      warnings.push("Reward/Risk is below 1R. The trade does not justify the risk.");
+      actions.push("Improve target, tighten stop, or skip this setup.");
+    } else if (rewardRisk < 2) {
+      if (permission !== "BLOCKED") {
+        permission = "WARNING";
+        permissionColor = "text-yellow-400";
+        permissionBorder = "border-yellow-500/40";
+        permissionBg = "bg-yellow-500/10";
+      }
+      warnings.push("Reward/Risk is below 2R.");
+      actions.push("Review whether the potential upside is worth the defined risk.");
+    } else {
+      reasons.push("Reward/Risk is acceptable based on the defined target.");
+    }
+
+    if (positionSize > portfolio) {
+      if (permission !== "BLOCKED") {
+        permission = "WARNING";
+        permissionColor = "text-yellow-400";
+        permissionBorder = "border-yellow-500/40";
+        permissionBg = "bg-yellow-500/10";
+      }
+      warnings.push("Calculated position size is larger than portfolio value.");
+      actions.push("Use smaller risk, wider stop logic review, or avoid over-allocation.");
+    } else {
+      reasons.push("Position size is within available portfolio value.");
+    }
+
+    if (target <= entry) {
+      permission = "BLOCKED";
+      permissionColor = "text-red-400";
+      permissionBorder = "border-red-500/40";
+      permissionBg = "bg-red-500/10";
+      warnings.push("Target price must be higher than entry price for a long spot setup.");
+      actions.push("Set a valid target above entry price.");
+    }
+
+    if (reasons.length === 0 && warnings.length === 0) {
+      reasons.push("Setup is valid based on current inputs.");
+    }
+
+    if (actions.length === 0) {
+      actions.push("Position can be considered if the setup matches your trading playbook.");
+    }
+
     return {
       riskDollar,
       lossPercent,
@@ -50,17 +127,22 @@ export default function SpotCalculatorPage() {
       target2R,
       target3R,
       target5R,
+      permission,
+      permissionColor,
+      permissionBorder,
+      permissionBg,
+      reasons,
+      warnings,
+      actions,
     };
   }, [portfolioValue, riskPercent, entryPrice, stopPrice, targetPrice]);
 
-return (
-  <AppShell
-    title="Spot Position Calculator"
-    subtitle="Calculate position size, risk amount, target levels, and reward/risk before entering a spot trade."
-  >
-    <div className="mx-auto max-w-6xl space-y-6">
-    
-
+  return (
+    <AppShell
+      title="Spot Position Calculator"
+      subtitle="Calculate position size, risk amount, target levels, and reward/risk before entering a spot trade."
+    >
+      <div className="mx-auto max-w-6xl space-y-6">
         <section className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
             <h2 className="text-xl font-semibold">Trade Input</h2>
@@ -146,6 +228,43 @@ return (
         </section>
 
         {result && (
+          <section
+            className={`rounded-xl border ${result.permissionBorder} ${result.permissionBg} p-6`}
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">
+                  Kento Rule Engine
+                </p>
+                <h2 className="mt-2 text-2xl font-bold">Trade Permission</h2>
+              </div>
+
+              <div className={`text-4xl font-bold ${result.permissionColor}`}>
+                {result.permission}
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+              <DecisionBlock
+                title="Passed Conditions"
+                items={result.reasons}
+                color="text-green-400"
+              />
+              <DecisionBlock
+                title="Warnings"
+                items={result.warnings.length > 0 ? result.warnings : ["No major warning detected."]}
+                color={result.warnings.length > 0 ? "text-yellow-400" : "text-green-400"}
+              />
+              <DecisionBlock
+                title="System Action"
+                items={result.actions}
+                color="text-blue-400"
+              />
+            </div>
+          </section>
+        )}
+
+        {result && (
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
             <h2 className="text-xl font-semibold">R-Multiple Targets</h2>
             <p className="mt-1 text-sm text-zinc-400">
@@ -180,8 +299,8 @@ return (
           </div>
         </section>
       </div>
-  </AppShell>
-);
+    </AppShell>
+  );
 }
 
 function InputField({
@@ -219,6 +338,27 @@ function ResultCard({
     <div className="rounded-lg border border-zinc-800 bg-black p-4">
       <p className="text-sm text-zinc-500">{label}</p>
       <p className={`mt-2 text-2xl font-bold ${color}`}>{value}</p>
+    </div>
+  );
+}
+
+function DecisionBlock({
+  title,
+  items,
+  color,
+}: {
+  title: string;
+  items: string[];
+  color: string;
+}) {
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-black p-5">
+      <h3 className={`font-semibold ${color}`}>{title}</h3>
+      <ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-300">
+        {items.map((item) => (
+          <li key={item}>• {item}</li>
+        ))}
+      </ul>
     </div>
   );
 }
