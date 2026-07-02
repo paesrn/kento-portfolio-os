@@ -1,65 +1,164 @@
-import Image from "next/image";
+const dashboardCards = [
+  {
+    title: "Portfolio Value",
+    value: "$10,000",
+    status: "NORMAL",
+    color: "text-green-400",
+  },
+  {
+    title: "Bitcoin Score",
+    value: "67",
+    status: "WAIT",
+    color: "text-yellow-400",
+  },
+  {
+    title: "Open Risk",
+    value: "0.5%",
+    status: "SAFE",
+    color: "text-green-400",
+  },
+  {
+    title: "Cash",
+    value: "$2,500",
+    status: "HIGH",
+    color: "text-blue-400",
+  },
+];
+
+const missions = [
+  "Check BTC market structure",
+  "Update trading journal",
+  "Review watchlist",
+  "Check open risk",
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-black text-white">
+      <section className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8">
+        <header className="border-b border-zinc-800 pb-6">
+          <p className="text-sm uppercase tracking-[0.3em] text-green-400">
+            Investment Control Room
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight">
+            Kento Portfolio OS
+          </h1>
+          <p className="mt-2 max-w-2xl text-zinc-400">
+            Data-driven portfolio operating system for risk management,
+            Bitcoin allocation, trading decisions, and performance review.
+          </p>
+        </header>
+
+        <section className="grid gap-4 md:grid-cols-4">
+          {dashboardCards.map((card) => (
+            <div
+              key={card.title}
+              className="rounded-xl border border-zinc-800 bg-zinc-950 p-5 shadow-lg"
+            >
+              <p className="text-sm text-zinc-400">{card.title}</p>
+              <div className="mt-4 flex items-end justify-between">
+                <p className={`text-3xl font-bold ${card.color}`}>
+                  {card.value}
+                </p>
+                <span className="rounded border border-zinc-700 px-2 py-1 text-xs text-zinc-300">
+                  {card.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-3">
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 lg:col-span-2">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+              <div>
+                <h2 className="text-xl font-semibold">Bitcoin Dashboard</h2>
+                <p className="text-sm text-zinc-400">
+                  Current decision status based on trend, macro, sentiment, and
+                  risk.
+                </p>
+              </div>
+              <div className="rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-2 text-yellow-400">
+                WAIT
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-4">
+              <Metric label="Trend" value="28/40" />
+              <Metric label="On-chain" value="15/25" />
+              <Metric label="Macro" value="12/20" />
+              <Metric label="Sentiment" value="12/15" />
+            </div>
+
+            <div className="mt-6 rounded-lg border border-zinc-800 bg-black p-4">
+              <p className="text-sm text-zinc-400">System Reasoning</p>
+              <p className="mt-2 text-zinc-200">
+                Bitcoin score is neutral-positive. Trend is improving, risk is
+                controlled, but confirmation is not strong enough for aggressive
+                buying. Current action: wait and monitor.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+            <h2 className="text-xl font-semibold">Today&apos;s Mission</h2>
+            <p className="mt-1 text-sm text-zinc-400">
+              Daily operating checklist
+            </p>
+
+            <div className="mt-5 space-y-3">
+              {missions.map((mission) => (
+                <label
+                  key={mission}
+                  className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-black px-4 py-3 text-sm text-zinc-300"
+                >
+                  <input type="checkbox" className="h-4 w-4 accent-green-500" />
+                  {mission}
+                </label>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+          <h2 className="text-xl font-semibold">System Status</h2>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-6">
+            <Status label="Portfolio" value="NORMAL" color="text-green-400" />
+            <Status label="Risk" value="LOW" color="text-green-400" />
+            <Status label="Bitcoin" value="WATCH" color="text-yellow-400" />
+            <Status label="Liquidity" value="NORMAL" color="text-green-400" />
+            <Status label="Cash" value="HIGH" color="text-blue-400" />
+            <Status label="Alarm" value="NONE" color="text-green-400" />
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-black p-4">
+      <p className="text-sm text-zinc-500">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-white">{value}</p>
+    </div>
+  );
+}
+
+function Status({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string;
+  color: string;
+}) {
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-black p-4">
+      <p className="text-xs uppercase tracking-wider text-zinc-500">{label}</p>
+      <p className={`mt-2 font-bold ${color}`}>{value}</p>
     </div>
   );
 }
