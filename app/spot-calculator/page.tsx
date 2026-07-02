@@ -1,6 +1,9 @@
 "use client";
 
 import AppShell from "../components/AppShell";
+import DecisionBlock from "../components/DecisionBlock";
+import InputField from "../components/InputField";
+import ResultCard from "../components/ResultCard";
 import { calculateSpotPosition } from "../lib/calculators/spot";
 import { useMemo, useState } from "react";
 
@@ -189,62 +192,3 @@ export default function SpotCalculatorPage() {
   );
 }
 
-function InputField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="block">
-      <span className="text-sm text-zinc-400">{label}</span>
-      <input
-        type="number"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-lg border border-zinc-800 bg-black px-4 py-3 text-white outline-none focus:border-green-500"
-      />
-    </label>
-  );
-}
-
-function ResultCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="rounded-lg border border-zinc-800 bg-black p-4">
-      <p className="text-sm text-zinc-500">{label}</p>
-      <p className={`mt-2 text-2xl font-bold ${color}`}>{value}</p>
-    </div>
-  );
-}
-
-function DecisionBlock({
-  title,
-  items,
-  color,
-}: {
-  title: string;
-  items: string[];
-  color: string;
-}) {
-  return (
-    <div className="rounded-lg border border-zinc-800 bg-black p-5">
-      <h3 className={`font-semibold ${color}`}>{title}</h3>
-      <ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-300">
-        {items.map((item) => (
-          <li key={item}>• {item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}

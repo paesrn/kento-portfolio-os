@@ -150,7 +150,6 @@ export default function FuturesCalculatorPage() {
     </AppShell>
   );
 }
-
 function InputField({
   label,
   value,
